@@ -1,52 +1,35 @@
 package com.example.libraryapp.model;
 
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
+@Entity
+@Table(name = "book")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Book {
-    private long id;
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "books_id_seq")
+    @SequenceGenerator(name = "books_id_seq", sequenceName = "books_id_seq", allocationSize = 1)
+    private Integer id;
+    @Column(length = 50)
     private String title;
-    private long authorId;
-    private String isbn;
 
-    public Book() {
-
-    }
-
-    public Book(long id, String title, long authorId, String isbn) {
-        this.id = id;
-        this.title = title;
-        this.authorId = authorId;
-        this.isbn = isbn;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public long getAuthorId() {
-        return authorId;
-    }
-
-    public void setAuthorId(long authorId) {
-        this.authorId = authorId;
-    }
-
-    public String getIsbn() {
-        return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
-    }
+    @ManyToOne
+    @JoinColumn(name = "Author", nullable = false)
+    private Author authorId;
+    private Integer genre;
+    private Integer publisher;
+    @Column(name = "releasedate")
+    private Date releaseDate;
+    private Integer type;
+    @Column(length = 150)
+    private String cover;
+    private Character section;
 }

@@ -2,22 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Knihovna - Login</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Optional JavaScript a jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
-<body>
-<h1>BookKeeper</h1>
-<h2>
-    ZŠ škola
-</h2>
-<h3>
-    Přihlášení
-</h3>
-    <form>
-        <label>E-mail</label>
-        <input type="email"><br>
-        <label>Heslo</label>
-        <input type="password"><br>
-        <input type="submit">
-    </form>
+<body class="bg-light">
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+        <h1 class="text-center text-primary mb-2">BookKeeper</h1>
+        <h2 class="text-center text-secondary">ZŠ škola</h2>
+        <h3 class="text-center text-muted mb-4">Přihlášení</h3>
+
+        <form>
+            <div class="form-group">
+                <label for="email">E-mail</label>
+                <input type="email" class="form-control" id="email" placeholder="Zadejte svůj e-mail">
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="password">Heslo</label>
+                <input type="password" class="form-control" id="password" placeholder="Zadejte své heslo">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-4">Přihlásit se</button>
+        </form>
+    </div>
+</div>
 </body>
 </html>
