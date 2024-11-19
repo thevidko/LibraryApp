@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "book")
@@ -23,13 +25,21 @@ public class Book {
 
     @ManyToOne
     @JoinColumn(name = "Author", nullable = false)
-    private Author authorId;
-    private Integer genre;
-    private Integer publisher;
+    private Author author;
+    @ManyToOne
+    @JoinColumn(name = "Genre", nullable = false)
+    private Genre genre;
+    @ManyToOne
+    @JoinColumn(name = "Publisher", nullable = false)
+    private Publisher publisher;
     @Column(name = "releasedate")
     private Date releaseDate;
-    private Integer type;
+    @ManyToOne
+    @JoinColumn(name = "type",nullable = false)
+    private Type type;
     @Column(length = 150)
     private String cover;
     private Character section;
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
+    private List<Printout> printouts = new ArrayList<>();
 }

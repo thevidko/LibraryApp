@@ -42,9 +42,9 @@
                 </thead>
                 <tbody>
                 <tr th:each="book : ${books}">
-                    <td><a th:href="@{/detail/{id}(id=${book.id})}" th:text="${book.title}"></a></td>
-                    <td th:text="${book.authorId.name} + ' ' + ${book.authorId.surname}"></td> <!-- Assuming `authorId.name` contains the author's name -->
-                    <td th:text="${book.genre}"></td> <!-- You may need to replace `book.genre` with a more readable value -->
+                    <td><a th:href="@{books/detail/{id}(id=${book.id})}" th:text="${book.title}"></a></td>
+                    <td th:text="${book.author.name} + ' ' + ${book.author.surname}"></td> <!-- Assuming `authorId.name` contains the author's name -->
+                    <td th:text="${book.genre.name}"></td> <!-- You may need to replace `book.genre` with a more readable value -->
                     <td th:text="${#dates.format(book.releaseDate, 'yyyy')}"></td>
                 </tr>
                 </tbody>
