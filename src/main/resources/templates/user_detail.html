@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail uživatele</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Optional JavaScript a jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-light">
+
+<div class="container my-5">
+    <!-- Header -->
+    <h1 class="text-center text-primary mb-4">BookKeeper</h1>
+
+    <!-- Navigation Links -->
+    <nav class="nav justify-content-center mb-4">
+        <a class="nav-link btn btn-outline-primary mx-2" th:href="@{'/books/'}">Knihy</a>
+        <a class="nav-link btn btn-outline-primary mx-2" th:href="@{'/users/'}">Uživatelé</a>
+        <a class="nav-link btn btn-outline-primary mx-2" th:href="@{'/loans/'}">Výpůjčky</a>
+    </nav>
+
+    <!-- Detail uživatele (Card design) -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="mb-0">Detail uživatele</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Informace o uživateli -->
+                <div class="col-md-12">
+                    <h2 class="text-primary mb-3">
+                        <span th:text="${user.name} + ' ' + ${user.surname}">Jméno uživatele</span>
+                    </h2>
+                    <p><strong>Email:</strong> <span th:text="${user.userData.email}">Email</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabulka výpůjček -->
+    <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center">
+            <h5 class="mb-0">Seznam výpůjček</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-striped mb-0">
+                <thead class="thead-dark">
+                <tr>
+                    <th>ID Výpůjčky</th>
+                    <th>Název knihy</th>
+                    <th>Datum vypůjčení</th>
+                    <th>Datum vrácení</th>
+                </tr>
+                </thead>
+                <tbody>
+                <!-- Zatím prázdné, připraveno pro data -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
