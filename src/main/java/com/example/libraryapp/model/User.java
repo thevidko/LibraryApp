@@ -22,7 +22,9 @@ public class User {
     @Column(length = 30)
     private String surname;
 
-    @OneToOne
-    @JoinColumn(name = "userdata", referencedColumnName = "id", nullable = false) // FK na UserData //
-    private UserData userData;
+    @Column(length = 40, name = "email")
+    private String username;
+    private String password;
+    private String role;
+
 }

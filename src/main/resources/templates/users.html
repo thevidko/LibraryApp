@@ -43,7 +43,7 @@
                     <td>
                         <a th:href="@{'/admin/users/detail/{id}'(id=${user.id})}" th:text="${user.name} + ' ' + ${user.surname} "></a>
                     </td>
-                    <td th:text="${user.userData.email}"></td>
+                    <td th:text="${user.username}"></td>
                 </tr>
                 </tbody>
             </table>

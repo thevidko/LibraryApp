@@ -20,15 +20,15 @@
         <h2 class="text-center text-secondary">ZŠ škola</h2>
         <h3 class="text-center text-muted mb-4">Přihlášení</h3>
 
-        <form>
+        <form th:action="@{/login}" method="post">
             <div class="form-group">
-                <label for="email">E-mail</label>
-                <input type="email" class="form-control" id="email" placeholder="Zadejte svůj e-mail">
+                <label for="username">E-mail</label>
+                <input type="text" class="form-control" name="username" id="username" placeholder="Zadejte svůj e-mail" required>
             </div>
 
             <div class="form-group mt-3">
                 <label for="password">Heslo</label>
-                <input type="password" class="form-control" id="password" placeholder="Zadejte své heslo">
+                <input type="password" class="form-control" name="password" id="password" placeholder="Zadejte své heslo" required>
             </div>
 
             <button type="submit" class="btn btn-primary btn-block mt-4">Přihlásit se</button>
