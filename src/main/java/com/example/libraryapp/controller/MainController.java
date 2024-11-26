@@ -15,13 +15,6 @@ public class MainController {
     }
 
 
-
-    /*@GetMapping("/")
-    public String index(Model model) {
-        model.addAttribute("books", bookService.getAllBooks());
-        return "index";
-    }*/
-
     @GetMapping("/login")
     public String login() {
         return "login";

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detail uživatele</title>
+    <title>Můj účet</title>
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -15,23 +15,24 @@
 </head>
 <body class="bg-light">
 
+
+
 <div class="container my-5">
     <!-- Header -->
-    <div th:insert="~{fragments/admin_navbar}"></div>
+    <div class="text-center mb-4">
+        <div th:insert="~{fragments/user_navbar}"></div>
+    </div>
 
-    <!-- Detail uživatele (Card design) -->
+    <!-- Karta s informacemi o uživateli -->
     <div class="card shadow mb-4">
         <div class="card-header bg-primary text-white text-center">
-            <h5 class="mb-0">Detail uživatele</h5>
+            <h5 class="mb-0">Informace o uživateli</h5>
         </div>
         <div class="card-body">
             <div class="row">
-                <!-- Informace o uživateli -->
-                <div class="col-md-12">
-                    <h2 class="text-primary mb-3">
-                        <span th:text="${user.name} + ' ' + ${user.surname}">Jméno uživatele</span>
-                    </h2>
-                    <p><strong>Email:</strong> <span th:text="${user.username}">Email</span></p>
+                <div class="col-md-6">
+                    <p><strong>Jméno:</strong> <span th:text="${user.name} + ' ' + ${user.surname}">Jméno uživatele</span></p>
+                    <p><strong>Email:</strong> <span th:text="${user.username}">Email uživatele</span></p>
                 </div>
             </div>
         </div>
@@ -63,6 +64,8 @@
         </div>
     </div>
     <div th:insert="~{fragments/footer}"></div>
+    </div>
+
 </div>
 
 </body>
