@@ -15,15 +15,9 @@
 </head>
 <body class="bg-light">
 <div class="container my-5">
-    <!-- Header -->
-    <h1 class="text-center text-primary mb-4">BookKeeper</h1>
+    <!-- Header + Header -->
+    <div th:insert="~{fragments/user_navbar}"></div>
 
-    <!-- Navigation Links -->
-    <nav class="nav justify-content-center mb-4">
-        <a class="nav-link btn btn-outline-primary mx-2" th:href="@{'/books/'}">Books</a>
-        <a class="nav-link btn btn-outline-primary mx-2" th:href="@{'/users/'}">Users</a>
-        <a class="nav-link btn btn-outline-primary mx-2" th:href="@{'/loans/'}">Loans</a>
-    </nav>
 
     <!-- Books Table -->
     <div class="card shadow">
