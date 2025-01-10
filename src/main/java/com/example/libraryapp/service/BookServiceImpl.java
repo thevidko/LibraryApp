@@ -26,6 +26,19 @@ public class BookServiceImpl implements BookService {
         Optional<Book> book = bookRepository.findById(id.longValue());
         return book.orElse(null);
     }
+    @Override
+    public List<Book> searchBooks(String query, String filter) {
+        switch (filter) {
+            case "title":
+                return bookRepository.findByTitleContainingIgnoreCase(query);
+            case "author":
+                return bookRepository.findByAuthorNameContainingIgnoreCase(query);
+            case "genre":
+                return bookRepository.findByGenreNameContainingIgnoreCase(query);
+            default:
+                return getAllBooks();
+        }
+    }
 
 
 }

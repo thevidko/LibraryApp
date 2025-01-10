@@ -1,6 +1,7 @@
 package com.example.libraryapp.controller;
 
 
+import com.example.libraryapp.model.Loan;
 import com.example.libraryapp.model.User;
 import com.example.libraryapp.service.LoanService;
 import com.example.libraryapp.service.UserService;
@@ -11,6 +12,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/")
@@ -24,8 +28,16 @@ public class AdminController {
     }
 
     @GetMapping("/users/")
-    public String users(Model model) {
-        model.addAttribute("users", userService.getAllUsers());
+    public String users(@RequestParam(required = false) String query,
+                        @RequestParam(required = false) String filter,
+                        Model model) {
+        if (query != null && !query.isEmpty()) {
+            model.addAttribute("users", userService.searchUsers(query, filter));
+        } else {
+            model.addAttribute("users", userService.getAllUsers());
+        }
+        model.addAttribute("query", query); // Přidání hodnoty query
+        model.addAttribute("filter", filter); // Přidání hodnoty filter
         return "users";
     }
 
@@ -40,8 +52,28 @@ public class AdminController {
     }
 
     @GetMapping("/loans/")
-    public String loans(Model model) {
-        model.addAttribute("loans", loanService.getLoans());
+    public String searchLoans(
+            @RequestParam(required = false) String id,
+            @RequestParam(required = false) String bookTitle,
+            @RequestParam(required = false) String copy,
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String status,
+            Model model) {
+
+        Boolean returned = null;
+        if ("returned".equals(status)) {
+            returned = true;
+        } else if ("not-returned".equals(status)) {
+            returned = false;
+        }
+
+        List<Loan> loans = loanService.searchLoans(id, bookTitle, copy, email, returned);
+        model.addAttribute("loans", loans);
+        model.addAttribute("id", id);  // Zapamatování hodnoty id
+        model.addAttribute("bookTitle", bookTitle);  // Zapamatování hodnoty bookTitle
+        model.addAttribute("copy", copy);  // Zapamatování hodnoty copy
+        model.addAttribute("email", email);  // Zapamatování hodnoty email
+        model.addAttribute("status", status);  // Zapamatování hodnoty status
         return "loans";
     }
 }

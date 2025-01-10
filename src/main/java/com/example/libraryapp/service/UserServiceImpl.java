@@ -43,6 +43,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> searchUsers(String query, String filter) {
+        switch (filter) {
+            case "name":
+                return userRepository.findByNameContainingIgnoreCase(query);
+            case "surname":
+                return userRepository.findBySurnameContainingIgnoreCase(query);
+            case "email":
+                return userRepository.findByUsernameContainingIgnoreCase(query);
+            default:
+                return getAllUsers();
+        }
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if(user == null) {

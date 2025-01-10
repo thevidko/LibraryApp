@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class UserController {
@@ -24,8 +25,16 @@ public class UserController {
     }
 
     @GetMapping("/books/")
-    public String books(Model model) {
-        model.addAttribute("books", bookService.getAllBooks());
+    public String books(@RequestParam(required = false) String query,
+                        @RequestParam(required = false) String filter,
+                        Model model) {
+        if (query != null && !query.isEmpty()) {
+            model.addAttribute("books", bookService.searchBooks(query, filter));
+        } else {
+            model.addAttribute("books", bookService.getAllBooks());
+        }
+        model.addAttribute("query", query);  // Uložení hodnoty query
+        model.addAttribute("filter", filter); // Uložení hodnoty filter
         return "books";
     }
 
