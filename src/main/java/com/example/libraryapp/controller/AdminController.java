@@ -7,14 +7,16 @@ import com.example.libraryapp.service.LoanService;
 import com.example.libraryapp.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Controller
 @RequestMapping("/admin/")
@@ -27,6 +29,15 @@ public class AdminController {
         this.loanService = loanService;
     }
 
+    @GetMapping("/dashboard/")
+    public String dashboard(Model model) {
+        // Získání aktuálního dne
+        LocalDate today = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEEE, d. MMMM yyyy", Locale.getDefault());
+
+        model.addAttribute("currentDay", today.format(formatter));
+        return "admin_dashboard";
+    }
     @GetMapping("/users/")
     public String users(@RequestParam(required = false) String query,
                         @RequestParam(required = false) String filter,
@@ -75,5 +86,18 @@ public class AdminController {
         model.addAttribute("email", email);  // Zapamatování hodnoty email
         model.addAttribute("status", status);  // Zapamatování hodnoty status
         return "loans";
+    }
+
+    // NOVÁ VÝPŮJČKA
+    @GetMapping("/loans/new/")
+    public String newLoan(Model model) {
+        return "new_loan";
+    }
+
+
+    //REDIRECTS
+    @GetMapping({"/","/dashboard",""})
+    public RedirectView redirectToAdminDashboard() {
+        return new RedirectView("/admin/dashboard/");
     }
 }

@@ -74,7 +74,6 @@ public class UserController {
         return "redirect:/books/";
     }
 
-    // TODO: Nebere v úvahu loanservice, funguje nějak jinak, bude lepší sjednotit
     @GetMapping("/me/")
     public String me(Model model) {
         String username = SecurityContextHolder.getContext().getAuthentication().getName();

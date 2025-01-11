@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookKeeper</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Optional JavaScript a jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-light">
+<div class="container my-5">
+    <div th:insert="~{fragments/admin_navbar}"></div>
+    <p class="text-center text-muted">Dnes je <span th:text="${currentDay}"></span>.</p>
+    <hr>
+
+    <!-- Sekce pro správu výpůjček -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="mb-0">Správa výpůjček</h5>
+        </div>
+        <div class="card-body text-center">
+            <button class="btn btn-success mx-2" onclick="window.location.href='/admin/loans/new/'">Nová výpůjčka</button>
+            <button class="btn btn-warning mx-2" onclick="window.location.href='/admin/loans/return/'">Vrácení knihy</button>
+        </div>
+    </div>
+
+    <!-- Sekce pro přidání knihy -->
+    <div class="card shadow mb-4">
+        <div class="card-header bg-dark text-white">
+            <h5 class="mb-0">Správa knih</h5>
+        </div>
+        <div class="card-body text-center">
+            <button class="btn btn-info" onclick="window.location.href='/admin/books/add'">Přidat knihu</button>
+        </div>
+    </div>
+
+    <!-- Sekce pro aktivaci uživatele -->
+    <div class="card shadow">
+        <div class="card-header bg-secondary text-white">
+            <h5 class="mb-0">Správa uživatelů</h5>
+        </div>
+        <div class="card-body text-center">
+            <button class="btn btn-primary" onclick="window.location.href='/admin/users/activate'">Aktivovat uživatele</button>
+        </div>
+    </div>
+
+    <div th:insert="~{fragments/footer}"></div>
+</div>
+</body>
+</html>

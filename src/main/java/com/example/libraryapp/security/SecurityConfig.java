@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -38,7 +39,7 @@ public class SecurityConfig {
                 .formLogin((form) -> form
                         .loginPage("/login") // Custom login page
                         .loginProcessingUrl("/login") // Form submission URL
-                        .defaultSuccessUrl("/", false)
+                        .successHandler(successHandler()) // Nastavení přesměrování po přihlášení
                         .permitAll())
                 .logout(logout -> logout
                         .logoutUrl("/logout")
@@ -55,6 +56,19 @@ public class SecurityConfig {
     public AccessDeniedHandler accessDeniedHandler() {
         return (request, response, accessDeniedException) -> {
             response.sendRedirect("/403");
+        };
+    }
+    @Bean
+    public AuthenticationSuccessHandler successHandler() {
+        return (request, response, authentication) -> {
+            if (authentication.getAuthorities().stream()
+                    .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"))) {
+                // Pokud je uživatel ADMIN, přesměrujeme na /admin/dashboard
+                response.sendRedirect("/admin/dashboard/");
+            } else {
+                // Jinak na hlavní stránku
+                response.sendRedirect("/");
+            }
         };
     }
 }
