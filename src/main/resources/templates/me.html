@@ -14,9 +14,6 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body class="bg-light">
-
-
-
 <div class="container my-5">
     <!-- Header -->
     <div class="text-center mb-4">
@@ -32,7 +29,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <p><strong>Jméno:</strong> <span th:text="${user.name} + ' ' + ${user.surname}">Jméno uživatele</span></p>
-                    <p><strong>Email:</strong> <span th:text="${user.username}">Email uživatele</span></p>
+                    <p><strong>E-mail:</strong> <span th:text="${user.username}">Email uživatele</span></p>
                 </div>
             </div>
         </div>
@@ -41,31 +38,29 @@
     <!-- Tabulka výpůjček -->
     <div class="card shadow">
         <div class="card-header bg-primary text-white text-center">
-            <h5 class="mb-0">Seznam výpůjček</h5>
+            <h5 class="mb-0">Seznam všech výpůjček</h5>
         </div>
         <div class="card-body p-0">
-            <table class="table table-striped mb-0">
+            <table class="table table-striped">
                 <thead class="thead-dark">
                 <tr>
-                    <th>ID Výpůjčky</th>
+                    <th>ID</th>
                     <th>Název knihy</th>
                     <th>Datum vypůjčení</th>
                     <th>Datum vrácení</th>
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="loan : ${user.loanList}">
+                <tr th:each="loan : ${loansAll}">
                     <td th:text="${loan.id}"></td>
-                    <td th:text="${loan.printout.book.title}"></td> <!-- Assuming `authorId.name` contains the author's name -->
-                    <td th:text="${#dates.format(loan.loanDate, 'dd.MM.yyyy')}"></td> <!-- You may need to replace `book.genre` with a more readable value -->
+                    <td th:text="${loan.printout.book.title}"></td>
+                    <td th:text="${#dates.format(loan.loanDate, 'dd.MM.yyyy')}"></td>
                     <td th:text="${#dates.format(loan.returnDate, 'dd.MM.yyyy')}"></td>
                 </tbody>
             </table>
         </div>
     </div>
     <div th:insert="~{fragments/footer}"></div>
-    </div>
-
 </div>
 
 </body>

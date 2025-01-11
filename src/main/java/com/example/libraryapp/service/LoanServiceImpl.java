@@ -1,6 +1,7 @@
 package com.example.libraryapp.service;
 
 import com.example.libraryapp.model.Loan;
+import com.example.libraryapp.model.User;
 import com.example.libraryapp.repository.LoanRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -37,5 +38,14 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<Loan> filterLoansByReturnedStatus(Boolean returned) {
         return loanRepository.findByReturned(returned);
+    }
+    @Override
+    public List<Loan> getLoansByUser(User user){
+        return loanRepository.findByUser(user);
+    }
+
+    @Override
+    public List<Loan> getActiveLoansByUser(User user) {
+        return loanRepository.findByUserAndLoanStatus(user, true);
     }
 }

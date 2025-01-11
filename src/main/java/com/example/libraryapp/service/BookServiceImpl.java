@@ -32,7 +32,8 @@ public class BookServiceImpl implements BookService {
             case "title":
                 return bookRepository.findByTitleContainingIgnoreCase(query);
             case "author":
-                return bookRepository.findByAuthorNameContainingIgnoreCase(query);
+                // Pokud je filtr "author", hledáme podle jména a příjmení autora
+                return bookRepository.findByAuthor_NameContainingIgnoreCaseOrAuthor_SurnameContainingIgnoreCase(query, query);
             case "genre":
                 return bookRepository.findByGenreNameContainingIgnoreCase(query);
             default:

@@ -1,6 +1,7 @@
 package com.example.libraryapp.repository;
 
 import com.example.libraryapp.model.Loan;
+import com.example.libraryapp.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,4 +23,8 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
 
     @Query("SELECT l FROM Loan l WHERE (:returned IS NULL OR l.loanStatus = :returned) AND LOWER(l.user.username) LIKE %:email%")
     List<Loan> findByUserEmailContainingIgnoreCase(@Param("email") String email, @Param("returned") Boolean returned);
+
+    List<Loan> findByUser(User user);
+
+    List<Loan> findByUserAndLoanStatus(User user, boolean loanStatus);
 }

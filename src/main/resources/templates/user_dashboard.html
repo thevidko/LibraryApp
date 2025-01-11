@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookKeeper</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Optional JavaScript a jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-light">
+    <div class="container my-5">
+        <div th:insert="~{fragments/user_navbar}"></div>
+        <h1 class="text-center">Vítejte, <span th:text="${user.name}"></span>!</h1>
+        <p class="text-center text-muted">Dnes je <span th:text="${currentDay}"></span>.</p>
+
+        <hr>
+
+        <div class="card shadow">
+            <div class="card-header bg-primary text-white text-center">
+                <h5 class="mb-0">Seznam aktivních výpůjček</h5>
+            </div>
+            <div class="card-body p-0">
+        <table class="table table-striped">
+            <thead class="thead-dark">
+            <tr>
+                <th>Kniha</th>
+                <th>Autor</th>
+                <th>Datum výpůjčky</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="loan : ${loansActive}">
+                <td th:text="${loan.printout.book.title}"></td>
+                <td th:text="${loan.printout.book.author.name} + ' ' + ${loan.printout.book.author.surname}"></td>
+                <td th:text="${#dates.format(loan.loanDate, 'dd.MM.yyyy')}"></td> <!-- You may need to replace `book.genre` with a more readable value -->
+            </tr>
+            </tbody>
+        </table>
+            </div>
+        </div>
+
+        <div class="card shadow mt-4">
+            <div class="card-header bg-dark text-white text-center">
+                <h5 class="mb-0">Statistiky</h5>
+            </div>
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tbody>
+                    <tr>
+                        <td class="font-weight-bold">Počet uskutečněných výpůjček:</td>
+                        <td th:text="${loansAll.size()}"></td>
+                    </tr>
+                    <!-- Další statistiky lze přidat zde -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div th:insert="~{fragments/footer}"></div>
+    </div>
+</body>
+</html>
