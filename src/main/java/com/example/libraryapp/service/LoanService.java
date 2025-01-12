@@ -14,4 +14,6 @@ public interface LoanService {
     List<Loan> getLoansByUser(User user);
     List<Loan> getActiveLoansByUser(User user);
     Loan createLoan(User user, Printout printout, Date loanDate);
+    Loan updateLoanByPrintoutId(Integer printoutId, Date returnDate, boolean loanStatus);
+    User getUserByPrintoutId(Integer printoutId);
 }

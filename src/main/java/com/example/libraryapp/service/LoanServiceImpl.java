@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -61,5 +62,42 @@ public class LoanServiceImpl implements LoanService {
 
         // Uložení výpůjčky do databáze
         return loanRepository.save(loan);
+    }
+
+
+    @Override
+    public Loan updateLoanByPrintoutId(Integer printoutId, Date returnDate, boolean loanStatus) {
+        // Načteme výpůjčku podle printoutId a loanStatus (TRUE)
+        Optional<Loan> loanOptional = loanRepository.findByPrintout_IdAndLoanStatus(printoutId, true);
+
+        if (loanOptional.isPresent()) {
+            Loan loan = loanOptional.get();
+
+            // Nastavení nových hodnot pro datum vrácení a status
+            loan.setReturnDate(returnDate);
+            loan.setLoanStatus(loanStatus);
+
+            // Uložení změněné výpůjčky do databáze
+            return loanRepository.save(loan);
+        } else {
+            // Pokud výpůjčka neexistuje, vyhodíme výjimku nebo můžeme vrátit jiný výsledek
+            throw new IllegalArgumentException("Výpůjčka pro daný výtisk neexistuje nebo je již vrácena.");
+        }
+    }
+
+    @Override
+    public User getUserByPrintoutId(Integer printoutId) {
+        // Načteme výpůjčku podle printoutId
+        Optional<Loan> loanOptional = loanRepository.findByPrintout_Id(printoutId);
+
+        if (loanOptional.isPresent()) {
+            Loan loan = loanOptional.get();
+
+            // Vrátíme uživatele, který je přiřazený k této výpůjčce
+            return loan.getUser();
+        } else {
+            // Pokud výpůjčka s daným printoutId neexistuje, vyhodíme výjimku
+            throw new IllegalArgumentException("Výpůjčka pro daný výtisk neexistuje.");
+        }
     }
 }

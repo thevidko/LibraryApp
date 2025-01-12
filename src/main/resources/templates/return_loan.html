@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookKeeper</title>
+    <title>Vrácení výtisku</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -15,74 +15,36 @@
 <body class="bg-light">
 <div class="container my-5">
     <div th:insert="~{fragments/admin_navbar}"></div>
-    <h1 class="text-center mb-4">Vrácení výpůjčky</h1>
-    <form action="/loans/create" method="post" id="loanForm">
-        <!-- ID uživatele -->
-        <div class="form-group">
-            <label for="userId">ID uživatele</label>
-            <input type="number" class="form-control" id="userId" name="userId" placeholder="Zadejte ID uživatele" required>
-        </div>
-
+    <h1 class="text-center mb-4">Vrácení výtisku</h1>
+    <form th:action="@{'/admin/loans/return/'}" method="post" th:object="${loan}">
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
         <!-- ID knihy -->
         <div class="form-group">
             <label for="printoutId">ID výtisku</label>
             <input type="number" class="form-control" id="printoutId" name="printoutId" placeholder="Zadejte ID výtisku" required>
         </div>
 
-        <!-- Datum vypůjčení -->
+        <!-- Datum vrácení -->
         <div class="form-group">
-            <label for="loanDate">Datum vrácení</label>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="todayCheckbox" name="useToday">
-                <label class="form-check-label" for="todayCheckbox">Použít dnešní datum</label>
-            </div>
-            <input type="date" class="form-control mt-2" id="loanDate" name="loanDate" required>
+            <label for="returnDate">Datum vrácení</label>
+            <input type="date" class="form-control mt-2" id="returnDate" name="returnDate" required>
+            <button type="button" class="btn btn-secondary" id="setTodayBtn">Použít dnešní datum</button>
         </div>
 
         <!-- Tlačítko odeslat -->
         <div class="text-center">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Vrátit výpůjčku</button>
+            <button type="submit" class="btn btn-primary">Vrátit výpůjčku</button>
         </div>
     </form>
-</div>
-
-<!-- Confirm Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Potvrzení výpůjčky</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Zavřít">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Opravdu si přejete vrátit tuto výpůjčku?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zrušit</button>
-                <button type="button" class="btn btn-primary" id="confirmSubmit">Potvrdit</button>
-            </div>
-        </div>
-    </div>
 </div>
 
 <div th:insert="~{fragments/footer}"></div>
 
 <script>
-    // Aktivace/deaktivace pole pro datum na základě checkboxu
-    $('#todayCheckbox').on('change', function () {
-        const isChecked = $(this).is(':checked');
-        $('#loanDate').prop('disabled', isChecked);
-        if (isChecked) {
-            const today = new Date().toISOString().split('T')[0];
-            $('#loanDate').val(today);
-        }
-    });
-
-    // Potvrzení odeslání formuláře
-    $('#confirmSubmit').on('click', function () {
-        $('#loanForm').submit();
+    // Nastavení dnešního data po kliknutí na tlačítko
+    $('#setTodayBtn').on('click', function () {
+        const today = new Date().toISOString().split('T')[0];
+        $('#returnDate').val(today);  // Nastaví dnešní datum do pole
     });
 </script>
 </body>

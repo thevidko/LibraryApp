@@ -9,9 +9,7 @@ import com.example.libraryapp.service.BookService;
 import com.example.libraryapp.service.LoanService;
 import com.example.libraryapp.service.PrintoutService;
 import com.example.libraryapp.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -20,10 +18,8 @@ import org.springframework.web.servlet.view.RedirectView;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/admin/")
@@ -150,17 +146,17 @@ public class AdminController {
         // Kontrola nulovosti výtisku
         if (printout == null) {
             model.addAttribute("error", "Výtisk s tímto ID neexistuje!");
-            return "new_loan_error";
+            return "loan_error";
         }
         //Kontrola dostupnosti výtisku
         if (!printout.isAvailable()){
             model.addAttribute("error", "Výtisk je v systému již vypůjčený!");
-            return "new_loan_error";
+            return "loan_error";
         }
         // Kontrola platnosti uživatele
         if (user == null) {
             model.addAttribute("error", "Uživatel s tímto ID neexistuje!");
-            return "new_loan_error";
+            return "loan_error";
         }
 
         // Přidání informací do modelu
@@ -194,6 +190,49 @@ public class AdminController {
     @GetMapping("/loans/return/")
     public String returnLoan(Model model) {
         return "return_loan";
+    }
+    @PostMapping("/loans/return/")
+    public String returnLoanForm(
+            @RequestParam("printoutId") Integer printoutId,
+            @RequestParam("returnDate") String returnDate,
+            Model model) {
+
+        // Načtení jednotlivých instancí + formátování datumu
+        Printout printout = printoutService.getPrintoutById(printoutId);
+        Date date = Date.valueOf(returnDate);
+
+        // Kontrola nulovosti výtisku
+        if (printout == null) {
+            model.addAttribute("error", "Výtisk s tímto ID neexistuje!");
+            return "loan_error";
+        }
+        //Kontrola dostupnosti výtisku
+        if (printout.isAvailable()){
+            model.addAttribute("error", "Výtisk v systému není vypůjčený!");
+            return "loan_error";
+        }
+        // Přidání informací do modelu
+        model.addAttribute("user", loanService.getUserByPrintoutId(printoutId));
+        model.addAttribute("printout", printout);
+        model.addAttribute("returnDate", date);
+
+        // Přesměrování na stránku potvrzení
+        return "return_loan_confirm";
+    }
+    @PostMapping("/loans/return/confirm/")
+    public String confirmReturnLoan(
+            @RequestParam("printoutId") Integer printoutId,
+            @RequestParam("returnDate") String returnDate) {
+
+        //formátování datumu
+        Date date = Date.valueOf(returnDate);
+
+        // Nalezení loan + update
+        loanService.updateLoanByPrintoutId(printoutId,date,false);
+        //Změna statusu výtisku
+        printoutService.changePrintoutStatus(printoutId);
+
+        return "redirect:/admin/dashboard/";
     }
 
     //REDIRECTS

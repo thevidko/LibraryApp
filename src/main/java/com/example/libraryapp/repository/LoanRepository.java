@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LoanRepository extends JpaRepository<Loan, Long> {
     @Query("SELECT l FROM Loan l WHERE (:returned IS NULL OR l.loanStatus = :returned)")
@@ -27,4 +28,6 @@ public interface LoanRepository extends JpaRepository<Loan, Long> {
     List<Loan> findByUser(User user);
 
     List<Loan> findByUserAndLoanStatus(User user, boolean loanStatus);
+    Optional<Loan> findByPrintout_IdAndLoanStatus(Integer printoutId, boolean loanStatus);
+    Optional<Loan> findByPrintout_Id(Integer printoutId);
 }

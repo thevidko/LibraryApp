@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nová výpůjčka</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+  <!-- Optional JavaScript a jQuery -->
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-light">
+<div class="container my-5">
+  <div th:insert="~{fragments/admin_navbar}"></div>
+  <h1 class="text-center mb-4">Potvrzení vrácení výpůjčky</h1>
+  <p><strong>Uživatel:</strong> <span th:text="${user.getFullName()}"></span> (<span th:text="${user.username}"></span>)</p>
+  <p><strong>Kniha:</strong> <span th:text="${printout.book.title}"></span> od <span th:text="${printout.book.author.getFullName()}"></span></p>
+  <p><strong>Datum vrácení výpůjčky:</strong> <span th:text="${#dates.format(returnDate, 'dd.MM.yyyy')}"></span></p>
+  <form th:action="@{'/admin/loans/return/confirm/'}" method="post">
+    <input type="hidden" name="userId" th:value="${user.id}">
+    <input type="hidden" name="printoutId" th:value="${printout.id}">
+    <input type="hidden" name="returnDate" th:value="${returnDate}">
+    <div class="text-center">
+      <button type="submit" class="btn btn-success">Potvrdit</button>
+      <a href="/admin/loans/return/" class="btn btn-secondary">Zpět</a>
+    </div>
+  </form>
+</div>
+
+
+<div th:insert="~{fragments/footer}"></div>
+
+</body>
+</html>
