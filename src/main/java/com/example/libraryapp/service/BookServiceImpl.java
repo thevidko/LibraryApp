@@ -1,6 +1,7 @@
 package com.example.libraryapp.service;
 
 import com.example.libraryapp.model.Book;
+import com.example.libraryapp.model.Printout;
 import com.example.libraryapp.repository.BookRepository;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,27 @@ public class BookServiceImpl implements BookService {
                 return bookRepository.findByGenreNameContainingIgnoreCase(query);
             default:
                 return getAllBooks();
+        }
+    }
+
+    @Override
+    public void saveBook(Book book) {
+        bookRepository.save(book);
+    }
+
+    @Override
+    public void addPrintout(Integer id) {
+        Book book = getBookById(id);
+
+        if (book != null) {
+            // Například přidání výtisku
+            Printout newPrintout = new Printout(book); // Použití BookService k vytvoření Printout
+            book.getPrintouts().add(newPrintout);  // Předpokládáme, že Book má seznam Printoutů
+
+            // Uložení změn na knize, což zahrnuje i nově přidaný Printout
+            bookRepository.save(book);
+        } else {
+            throw new RuntimeException("Kniha nenalezena");
         }
     }
 

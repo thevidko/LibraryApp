@@ -16,48 +16,129 @@
 <div class="container my-5">
     <div th:insert="~{fragments/admin_navbar}"></div>
     <h1 class="text-center mb-4">Nová kniha</h1>
-    <form action="/loans/create" method="post" id="loanForm">
+    <form th:action="@{'/admin/books/new/create/'}" method="post" th:object="${book}">
+        <input type="hidden" name="_csrf" value="${_csrf.token}">
+
         <!-- Název knihy -->
         <div class="form-group">
-            <label for="title">Název/titul knihy</label>
-            <input type="text" class="form-control" id="title" name="title" placeholder="Zadejte titul" required>
+            <label for="title">Název knihy</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Zadejte název knihy" required>
+        </div>
+
+        <!-- Autor -->
+        <div class="form-group">
+            <label for="author">Autor</label>
+            <select class="form-control" id="author" name="author" required>
+                <option value="" disabled selected>Vyberte autora</option>
+                <!-- Dynamické načtení autorů -->
+                <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.name + ' ' + author.surname}"></option>
+            </select>
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="newAuthorCheck">
+                <label class="form-check-label" for="newAuthorCheck">Nový autor</label>
+            </div>
+            <div id="newAuthorFields" class="mt-3" style="display: none;">
+                <input type="text" class="form-control mb-2" id="newAuthorName" name="newAuthorName" placeholder="Jméno autora">
+                <input type="text" class="form-control" id="newAuthorSurname" name="newAuthorSurname" placeholder="Příjmení autora">
+            </div>
+        </div>
+
+        <!-- Žánr -->
+        <div class="form-group">
+            <label for="genre">Žánr</label>
+            <select class="form-control" id="genre" name="genre" required>
+                <option value="" disabled selected>Vyberte žánr</option>
+                <!-- Dynamické načtení žánrů -->
+                <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.name}"></option>
+            </select>
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="newGenreCheck">
+                <label class="form-check-label" for="newGenreCheck">Nový žánr</label>
+            </div>
+            <div id="newGenreFields" class="mt-3" style="display: none;">
+                <input type="text" class="form-control" id="newGenreName" name="newGenreName" placeholder="Název žánru">
+            </div>
         </div>
 
 
-        <!-- Datum vypůjčení -->
+        <!-- Vydavatel -->
         <div class="form-group">
-            <label for="releaseDate">Rok vydání</label>
-            <input type="date" class="form-control mt-2" name="releaseDate" id="releaseDate" required>
+            <label for="publisher">Vydavatel</label>
+            <select class="form-control" id="publisher" name="publisher" required>
+                <option value="" disabled selected>Vyberte vydavatele</option>
+                <option th:each="publisher : ${publishers}" th:value="${publisher.id}" th:text="${publisher.name}"></option>
+            </select>
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="newPublisherCheck">
+                <label class="form-check-label" for="newPublisherCheck">Nový vydavatel</label>
+            </div>
+            <div id="newPublisherFields" class="mt-3" style="display: none;">
+                <input type="text" class="form-control" id="newPublisherName" name="newPublisherName" placeholder="Název vydavatele">
+            </div>
+        </div>
+
+        <!-- Datum vydání -->
+        <div class="form-group">
+            <label for="releaseDate">Datum vydání</label>
+            <input type="date" class="form-control" id="releaseDate" name="releaseDate" required>
+        </div>
+
+        <!-- Typ -->
+        <div class="form-group">
+            <label for="type">Typ</label>
+            <select class="form-control" id="type" name="type" required>
+                <option value="" disabled selected>Vyberte typ</option>
+                <option th:each="type : ${types}" th:value="${type.id}" th:text="${type.name}"></option>
+            </select>
+            <div class="form-check mt-2">
+                <input type="checkbox" class="form-check-input" id="newTypeCheck">
+                <label class="form-check-label" for="newTypeCheck">Nový typ</label>
+            </div>
+            <div id="newTypeFields" class="mt-3" style="display: none;">
+                <input type="text" class="form-control" id="newTypeName" name="newTypeName" placeholder="Název typu">
+            </div>
+        </div>
+
+        <!-- Obálka -->
+        <div class="form-group">
+            <label for="cover">Odkaz na obálku</label>
+            <input type="text" class="form-control" id="cover" name="cover" placeholder="Vložte URL obálky">
+        </div>
+
+        <!-- Sekce -->
+        <div class="form-group">
+            <label for="section">Sekce</label>
+            <input type="text" class="form-control" id="section" name="section" placeholder="Zadejte sekci (A-Z)">
         </div>
 
         <!-- Tlačítko odeslat -->
         <div class="text-center">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Vytvořit knihu</button>
+            <button type="submit" class="btn btn-primary">Vytvořit knihu</button>
         </div>
     </form>
 </div>
 
-<!-- Confirm Modal -->
-<div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="confirmModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Potvrzení vytvoření knihy</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Zavřít">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Opravdu si přejete vytvořit tuto knihu?
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zrušit</button>
-                <button type="button" class="btn btn-primary" id="confirmSubmit">Potvrdit</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <div th:insert="~{fragments/footer}"></div>
+<script>
+    // Zobrazení/skrytí polí pro nového autora
+    $('#newAuthorCheck').on('change', function () {
+        $('#newAuthorFields').toggle(this.checked);
+    });
+
+    // Zobrazení/skrytí polí pro nový žánr
+    $('#newGenreCheck').on('change', function () {
+        $('#newGenreFields').toggle(this.checked);
+    });
+
+    // Zobrazení/skrytí polí pro nový typ
+    $('#newTypeCheck').on('change', function () {
+        $('#newTypeFields').toggle(this.checked);
+    });
+
+    // Zobrazení/skrytí polí pro nového vydavatele
+    $('#newPublisherCheck').on('change', function () {
+        $('#newPublisherFields').toggle(this.checked);
+    });
+</script>
 </body>
 </html>

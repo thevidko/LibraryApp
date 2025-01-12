@@ -37,4 +37,9 @@ public class PrintoutServiceImpl implements PrintoutService {
         // Pokud výtisk neexistuje, vyhodíme výjimku (nebo můžeme vrátit nějakou indikaci chyby)
         throw new IllegalArgumentException("Výtisk s tímto ID neexistuje.");
     }
+
+    @Override
+    public void deletePrintoutById(int id) {
+        printoutRepository.deleteById((long) id);
+    }
 }

@@ -5,5 +5,6 @@ import com.example.libraryapp.model.Printout;
 public interface PrintoutService {
     Printout getPrintoutById(int id);
     Printout changePrintoutStatus(Integer id);
+    void deletePrintoutById(int id);
 
 }

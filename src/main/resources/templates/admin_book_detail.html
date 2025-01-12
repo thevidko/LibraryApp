@@ -10,7 +10,7 @@
 
     <!-- Optional JavaScript a jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body class="bg-light">
@@ -20,11 +20,13 @@
     <div th:insert="~{fragments/admin_navbar}"></div>
     <div th:insert="~{fragments/book_detail_fragment}"></div>
 
-
     <!-- Tabulka výtisků -->
     <div class="card shadow">
-        <div class="card-header bg-primary text-white text-center">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Výtisky knihy</h5>
+            <form method="post" th:action="@{'/admin/books/' + ${id} + '/new_printout/'}">
+                <button type="button" class="btn btn-light btn-sm" id="add-printout" data-toggle="modal" data-target="#addPrintoutModal">Přidat výtisk</button>
+            </form>
         </div>
         <div class="card-body p-0">
             <table class="table table-striped mb-0">
@@ -32,12 +34,24 @@
                 <tr>
                     <th>ID Výtisku</th>
                     <th>Vypůjčeno</th>
+                    <th>Akce</th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="printout : ${book.printouts}">
                     <td th:text="${printout.id}">ID výtisku</td>
                     <td th:text="${printout.available ? 'Ne' : 'Ano'}">Vypůjčeno</td>
+                    <td>
+                        <div class="dropdown">
+                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Akce
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" th:href="@{'/admin/print-label/' + ${printout.id}}" target="_blank">Štítek</a>
+                                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#deletePrintoutModal" th:classappend="${printout.available ? '' : 'disabled'}" th:data-id="${printout.id}">Vymazat výtisk</a>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -45,6 +59,58 @@
     </div>
     <div th:insert="~{fragments/footer}"></div>
 </div>
-
+<div class="modal fade" id="addPrintoutModal" tabindex="-1" role="dialog" aria-labelledby="addPrintoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addPrintoutModalLabel">Potvrzení vložení výtisku</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Jste si jisti, že chcete přidat nový výtisk knihy?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zrušit</button>
+                <form method="post" th:action="@{'/admin/books/' + ${id} + '/new_printout/'}">
+                    <button type="submit" class="btn btn-primary">Potvrdit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="deletePrintoutModal" tabindex="-1" role="dialog" aria-labelledby="deletePrintoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deletePrintoutModalLabel">Potvrzení vymazání výtisku</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Opravu chcete vymazat tento výtisk? S výtiskem se vymažou i historie všech vázaných výpůjček. Tato akce je nevratná.
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Zrušit</button>
+                <form method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button type="submit" class="btn btn-danger">Potvrdit</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
+<script>
+    $('#deletePrintoutModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget); // Tlačítko, které otevřelo modal
+        var printoutId = button.data('id'); // Získání ID z datového atributu
+
+        // Nastavení akce formuláře s ID výtisku
+        var modal = $(this);
+        modal.find('form').attr('action', '/admin/books/delete_printout/' + printoutId);
+    });
+</script>
 </html>

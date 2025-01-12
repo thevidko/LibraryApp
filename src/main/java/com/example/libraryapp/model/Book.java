@@ -42,4 +42,8 @@ public class Book {
     private Character section;
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL)
     private List<Printout> printouts = new ArrayList<>();
+
+    public void addPrintout(Printout printout) {
+        this.printouts.add(printout);
+    }
 }

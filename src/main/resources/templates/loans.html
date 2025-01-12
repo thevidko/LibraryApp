@@ -68,7 +68,7 @@
                 <tbody>
                 <tr th:each="loan : ${loans}">
                     <td th:text="${loan.id}"></td>
-                    <td><a th:href="@{/books/detail/{id}(id=${loan.printout.book.id})}" th:text="${loan.printout.book.title}"></a></td>
+                    <td><a th:href="@{/admin/books/detail/{id}(id=${loan.printout.book.id})}" th:text="${loan.printout.book.title}"></a></td>
                     <td th:text="${loan.user.username}"></td>
                     <td th:text="${#dates.format(loan.loanDate, 'dd.MM.yyyy')}"></td>
                     <td th:text="${#dates.format(loan.returnDate, 'dd.MM.yyyy')}"></td>

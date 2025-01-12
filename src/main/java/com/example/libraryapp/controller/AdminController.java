@@ -1,21 +1,34 @@
 package com.example.libraryapp.controller;
 
 
-import com.example.libraryapp.model.Book;
-import com.example.libraryapp.model.Loan;
-import com.example.libraryapp.model.Printout;
-import com.example.libraryapp.model.User;
-import com.example.libraryapp.service.BookService;
-import com.example.libraryapp.service.LoanService;
-import com.example.libraryapp.service.PrintoutService;
-import com.example.libraryapp.service.UserService;
+import com.example.libraryapp.model.*;
+import com.example.libraryapp.service.*;
+import com.example.libraryapp.utils.TextNormalizer;
+import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletResponse;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDFont;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.swing.text.Document;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.sql.Date;
+import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -28,12 +41,21 @@ public class AdminController {
     private LoanService loanService;
     private BookService bookService;
     private PrintoutService printoutService;
+    private AuthorService authorService;
+    private GenreService genreService;
+    private PublisherService publisherService;
+    private TypeService typeService;
+
     @Autowired
-    public AdminController(UserService userService, LoanService loanService, BookService bookService, PrintoutService printoutService) {
+    public AdminController(UserService userService, LoanService loanService, BookService bookService, PrintoutService printoutService, AuthorService authorService, GenreService genreService, PublisherService publisherService, TypeService typeService) {
         this.userService = userService;
         this.loanService = loanService;
         this.bookService = bookService;
         this.printoutService = printoutService;
+        this.authorService = authorService;
+        this.genreService = genreService;
+        this.publisherService = publisherService;
+        this.typeService = typeService;
     }
 
     @GetMapping("/books/")
@@ -52,7 +74,42 @@ public class AdminController {
 
     @GetMapping("/books/new/")
     public String newBook(Model model) {
+        model.addAttribute("book", new Book());
+        model.addAttribute("authors", authorService.getAllAuthors());
+        model.addAttribute("genres", genreService.getAllGenres());
+        model.addAttribute("publishers", publisherService.getAllPublishers());
+        model.addAttribute("types", typeService.getAllTypes());
         return "new_book";
+    }
+    @PostMapping("/books/new/create/")
+    public String createNewBook(@ModelAttribute Book book,
+                                @RequestParam(required = false) String newAuthorName,
+                                @RequestParam(required = false) String newAuthorSurname,
+                                @RequestParam(required = false) String newGenreName,
+                                @RequestParam(required = false) String newTypeName,
+                                @RequestParam(required = false) String newPublisherName) {
+        if (newAuthorName != null && newAuthorSurname != null) {
+            Author newAuthor = new Author(null, newAuthorName, newAuthorSurname);
+            authorService.saveAuthor(newAuthor);
+            book.setAuthor(newAuthor);
+        }
+        if (newGenreName != null) {
+            Genre newGenre = new Genre(null, newGenreName);
+            genreService.saveGenre(newGenre);
+            book.setGenre(newGenre);
+        }
+        if (newTypeName != null) {
+            Type newType = new Type(null, newTypeName);
+            typeService.saveType(newType);
+            book.setType(newType);
+        }
+        if (newPublisherName != null) {
+            Publisher newPublisher = new Publisher(null, newPublisherName);
+            publisherService.savePublisher(newPublisher);
+            book.setPublisher(newPublisher);
+        }
+        bookService.saveBook(book);
+        return "redirect:/admin/books";
     }
 
     @GetMapping("/books/detail/{id}")
@@ -235,9 +292,71 @@ public class AdminController {
         return "redirect:/admin/dashboard/";
     }
 
+    //New printout
+    @PostMapping("/books/{id}/new_printout/")
+    public String addPrintout(@PathVariable("id") Integer id) {
+        // Zavolání služby pro přidání výtisku
+        bookService.addPrintout(id);
+
+        // Přesměrování zpět na detail knihy
+        return "redirect:/admin/books/detail/" + id;
+    }
+
+    //DELETE PRINTOUT
+    @PostMapping("/books/delete_printout/{id}")
+    public String deletePrintout(@PathVariable("id") Integer id) {
+        Printout printout = printoutService.getPrintoutById(id);
+        if (printout != null && printout.isAvailable()){
+            String back = printout.getBook().getId().toString();
+            printoutService.deletePrintoutById(id);
+            return "redirect:/admin/books/detail/" + back;
+        }
+        return "redirect:/admin/books/";
+    }
+
     //REDIRECTS
     @GetMapping({"/","/dashboard",""})
     public RedirectView redirectToAdminDashboard() {
         return new RedirectView("/admin/dashboard/");
+    }
+
+    //PDF
+    @GetMapping("/print-label/{id}")
+    public void generateLabel(@PathVariable("id") Integer printoutId, HttpServletResponse response) {
+        Printout printout = printoutService.getPrintoutById(printoutId);
+        String bookTitle = printout.getBook().getTitle();
+        String printoutDetails = "Vytisk ID: " + printoutId;
+
+        // Nastavení odpovědi jako PDF
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=label-" + printoutId + ".pdf");
+
+        try (PDDocument document = new PDDocument()) {
+            // Vytvoření nové stránky
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            // Přidání obsahu na stránku
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 15);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(50, 750);
+                contentStream.showText("Knihovna ZS Skola");
+                contentStream.endText();
+
+                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 15);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(50, 720);
+                contentStream.showText("Nazev knihy: " + TextNormalizer.removeDiacritics(bookTitle));
+                contentStream.newLineAtOffset(0, -15);
+                contentStream.showText(printoutDetails);
+                contentStream.endText();
+            }
+
+            // Zapsání PDF do odpovědi
+            document.save(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

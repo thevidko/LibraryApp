@@ -25,4 +25,9 @@ public class Printout {
 
     @OneToMany(mappedBy = "printout", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Loan> loans;
+
+    public Printout(Book book) {
+        this.book = book;
+        this.available = true;
+    }
 }
