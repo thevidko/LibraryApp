@@ -16,9 +16,7 @@
 <body class="bg-light">
 <div class="container my-5">
     <!-- Header + Header -->
-    <div th:insert="~{fragments/user_navbar}"></div>
-
-
+    <div th:insert="~{fragments/admin_navbar}"></div>
     <!-- Books Table -->
     <div class="card shadow">
         <div class="card-header bg-primary text-white text-center">
@@ -58,7 +56,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="book : ${books}">
-                    <td><a th:href="@{/books/detail/{id}(id=${book.id})}" th:text="${book.title}"></a></td>
+                    <td><a th:href="@{/admin/books/detail/{id}(id=${book.id})}" th:text="${book.title}"></a></td>
                     <td th:text="${book.author.name} + ' ' + ${book.author.surname}"></td> <!-- Assuming `authorId.name` contains the author's name -->
                     <td th:text="${book.genre.name}"></td> <!-- You may need to replace `book.genre` with a more readable value -->
                     <td th:text="${#dates.format(book.releaseDate, 'yyyy')}"></td>
@@ -72,7 +70,7 @@
 </body>
 <script>
     function resetForm() {
-        window.location.href = "/books/";  // Přesměruje na stránku bez parametrů
+        window.location.href = "/admin/books/";  // Přesměruje na stránku bez parametrů
     }
 </script>
 </html>

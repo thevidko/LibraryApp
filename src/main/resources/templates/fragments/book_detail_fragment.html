@@ -1,0 +1,24 @@
+<!-- Detail knihy (Card design) -->
+<div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white text-center">
+        <h5 class="mb-0">Detail knihy</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- Obálka knihy -->
+            <div class="col-md-4 text-center">
+                <img src="#" th:src="@{${book.cover}}" alt="Obálka knihy" class="img-fluid rounded shadow">
+            </div>
+            <!-- Informace o knize -->
+            <div class="col-md-8">
+                <h2 class="text-primary mb-3" th:text="${book.title}">Název knihy</h2>
+                <p><strong>Autor:</strong> <span th:text="${book.author.name} + ' ' + ${book.author.surname}">Autor</span></p>
+                <p><strong>Žánr:</strong> <span th:text="${book.genre.name}">Žánr</span></p>
+                <p><strong>Vydavatel:</strong> <span th:text="${book.publisher.name}">Vydavatel</span></p>
+                <p><strong>Datum vydání:</strong> <span th:text="${#dates.format(book.releaseDate, 'dd.MM.yyyy')}">Datum vydání</span></p>
+                <p><strong>Typ:</strong> <span th:text="${book.type.name}">Typ</span></p>
+                <p><strong>Sekce:</strong> <span th:text="${book.section}">Sekce</span></p>
+            </div>
+        </div>
+    </div>
+</div>

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BookKeeper</title>
+    <title>Nová kniha</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
@@ -15,33 +15,24 @@
 <body class="bg-light">
 <div class="container my-5">
     <div th:insert="~{fragments/admin_navbar}"></div>
-    <h1 class="text-center mb-4">Vrácení výpůjčky</h1>
+    <h1 class="text-center mb-4">Nová kniha</h1>
     <form action="/loans/create" method="post" id="loanForm">
-        <!-- ID uživatele -->
+        <!-- Název knihy -->
         <div class="form-group">
-            <label for="userId">ID uživatele</label>
-            <input type="number" class="form-control" id="userId" name="userId" placeholder="Zadejte ID uživatele" required>
+            <label for="title">Název/titul knihy</label>
+            <input type="text" class="form-control" id="title" name="title" placeholder="Zadejte titul" required>
         </div>
 
-        <!-- ID knihy -->
-        <div class="form-group">
-            <label for="printoutId">ID výtisku</label>
-            <input type="number" class="form-control" id="printoutId" name="printoutId" placeholder="Zadejte ID výtisku" required>
-        </div>
 
         <!-- Datum vypůjčení -->
         <div class="form-group">
-            <label for="loanDate">Datum vrácení</label>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" id="todayCheckbox" name="useToday">
-                <label class="form-check-label" for="todayCheckbox">Použít dnešní datum</label>
-            </div>
-            <input type="date" class="form-control mt-2" id="loanDate" name="loanDate" required>
+            <label for="releaseDate">Rok vydání</label>
+            <input type="date" class="form-control mt-2" name="releaseDate" id="releaseDate" required>
         </div>
 
         <!-- Tlačítko odeslat -->
         <div class="text-center">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Vrátit výpůjčku</button>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#confirmModal">Vytvořit knihu</button>
         </div>
     </form>
 </div>
@@ -51,13 +42,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="confirmModalLabel">Potvrzení výpůjčky</h5>
+                <h5 class="modal-title" id="confirmModalLabel">Potvrzení vytvoření knihy</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Zavřít">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                Opravdu si přejete vrátit tuto výpůjčku?
+                Opravdu si přejete vytvořit tuto knihu?
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Zrušit</button>
@@ -68,22 +59,5 @@
 </div>
 
 <div th:insert="~{fragments/footer}"></div>
-
-<script>
-    // Aktivace/deaktivace pole pro datum na základě checkboxu
-    $('#todayCheckbox').on('change', function () {
-        const isChecked = $(this).is(':checked');
-        $('#loanDate').prop('disabled', isChecked);
-        if (isChecked) {
-            const today = new Date().toISOString().split('T')[0];
-            $('#loanDate').val(today);
-        }
-    });
-
-    // Potvrzení odeslání formuláře
-    $('#confirmSubmit').on('click', function () {
-        $('#loanForm').submit();
-    });
-</script>
 </body>
 </html>

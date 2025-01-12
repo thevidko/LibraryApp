@@ -22,4 +22,8 @@ public class Author {
     @Column(length = 50)
     private String surname;
 
+    public String getFullName(){
+        return name + " " + surname;
+    }
+
 }

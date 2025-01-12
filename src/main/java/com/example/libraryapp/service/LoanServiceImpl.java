@@ -1,11 +1,13 @@
 package com.example.libraryapp.service;
 
 import com.example.libraryapp.model.Loan;
+import com.example.libraryapp.model.Printout;
 import com.example.libraryapp.model.User;
 import com.example.libraryapp.repository.LoanRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +49,17 @@ public class LoanServiceImpl implements LoanService {
     @Override
     public List<Loan> getActiveLoansByUser(User user) {
         return loanRepository.findByUserAndLoanStatus(user, true);
+    }
+    @Override
+    public Loan createLoan(User user, Printout printout, Date loanDate){
+        // Vytvoření nové výpůjčky
+        Loan loan = new Loan();
+        loan.setLoanDate(loanDate);
+        loan.setLoanStatus(true);  // Předpokládáme, že výpůjčka je aktivní při vytvoření
+        loan.setUser(user);
+        loan.setPrintout(printout);
+
+        // Uložení výpůjčky do databáze
+        return loanRepository.save(loan);
     }
 }
