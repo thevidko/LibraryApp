@@ -19,7 +19,9 @@
         <h1 class="text-center text-primary mb-2">BookKeeper</h1>
         <h2 class="text-center text-secondary">ZŠ škola</h2>
         <h3 class="text-center text-muted mb-4">Přihlášení</h3>
-
+        <div class="alert alert-danger mt-4" role="alert" th:if="${param.error}">
+            Přihlášení se nezdařilo. Zkontrolujte své přihlašovací údaje a zkuste to znovu.
+        </div>
         <form th:action="@{/login}" method="post">
             <div class="form-group">
                 <label for="username">E-mail</label>

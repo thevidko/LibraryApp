@@ -4,31 +4,21 @@ package com.example.libraryapp.controller;
 import com.example.libraryapp.model.*;
 import com.example.libraryapp.service.*;
 import com.example.libraryapp.utils.TextNormalizer;
-import jakarta.annotation.Resource;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType1Font;
 import org.apache.pdfbox.pdmodel.font.Standard14Fonts;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.view.RedirectView;
 
-import javax.swing.text.Document;
-import java.io.ByteArrayOutputStream;
+
 import java.io.IOException;
 import java.sql.Date;
-import java.text.Normalizer;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -369,6 +359,46 @@ public class AdminController {
                 contentStream.beginText();
                 contentStream.newLineAtOffset(50, 720);
                 contentStream.showText("Nazev knihy: " + TextNormalizer.removeDiacritics(bookTitle));
+                contentStream.newLineAtOffset(0, -15);
+                contentStream.showText(printoutDetails);
+                contentStream.endText();
+            }
+
+            // Zapsání PDF do odpovědi
+            document.save(response.getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    //Print card
+    @GetMapping("/users/print/{id}")
+    public void generateUserCard(@PathVariable("id") Integer userId, HttpServletResponse response) {
+
+        User user = userService.getUserById(userId);
+        String printoutDetails = "ID uživatele: " + userId;
+
+        // Nastavení odpovědi jako PDF
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=label-" + userId + ".pdf");
+
+        try (PDDocument document = new PDDocument()) {
+            // Vytvoření nové stránky
+            PDPage page = new PDPage();
+            document.addPage(page);
+
+            // Přidání obsahu na stránku
+            try (PDPageContentStream contentStream = new PDPageContentStream(document, page)) {
+                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 15);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(50, 750);
+                contentStream.showText("Knihovna ZS Skola - Karta uzivatele");
+                contentStream.endText();
+
+                contentStream.setFont(new PDType1Font(Standard14Fonts.FontName.TIMES_BOLD), 15);
+                contentStream.beginText();
+                contentStream.newLineAtOffset(50, 720);
+                contentStream.showText("Jmeno a Prijmeni: " + TextNormalizer.removeDiacritics(user.getFullName()));
                 contentStream.newLineAtOffset(0, -15);
                 contentStream.showText(printoutDetails);
                 contentStream.endText();

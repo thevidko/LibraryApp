@@ -35,6 +35,15 @@
                 </div>
             </div>
         </div>
+        <div class="card-footer text-center">
+            <a
+                    class="btn btn-secondary"
+                    th:href="@{/admin/users/print/{id}(id=${user.id})}"
+                    target="_blank"
+            >
+                Tisk kartičky
+            </a>
+        </div>
     </div>
 
     <!-- Tabulka výpůjček -->

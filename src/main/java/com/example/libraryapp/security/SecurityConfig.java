@@ -37,7 +37,8 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin((form) -> form
-                        .loginPage("/login") // Custom login page
+                        .loginPage("/login")// Custom login page
+                        .failureUrl("/login?error=true")
                         .loginProcessingUrl("/login") // Form submission URL
                         .successHandler(successHandler()) // Nastavení přesměrování po přihlášení
                         .permitAll())
