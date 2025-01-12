@@ -7,4 +7,5 @@ import java.util.List;
 public interface TypeService {
     List<Type> getAllTypes();
     void saveType(Type type);
+    Type getTypeById(int id);
 }

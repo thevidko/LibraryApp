@@ -120,24 +120,32 @@
 
 <div th:insert="~{fragments/footer}"></div>
 <script>
-    // Zobrazení/skrytí polí pro nového autora
-    $('#newAuthorCheck').on('change', function () {
-        $('#newAuthorFields').toggle(this.checked);
+    function toggleFields(checkbox, selectField, newFields) {
+        if (checkbox.checked) {
+            selectField.setAttribute('disabled', 'disabled');
+            selectField.removeAttribute('required');
+            newFields.style.display = 'block';
+        } else {
+            selectField.removeAttribute('disabled');
+            selectField.setAttribute('required', 'required');
+            newFields.style.display = 'none';
+        }
+    }
+
+    document.getElementById('newAuthorCheck').addEventListener('change', function () {
+        toggleFields(this, document.getElementById('author'), document.getElementById('newAuthorFields'));
     });
 
-    // Zobrazení/skrytí polí pro nový žánr
-    $('#newGenreCheck').on('change', function () {
-        $('#newGenreFields').toggle(this.checked);
+    document.getElementById('newGenreCheck').addEventListener('change', function () {
+        toggleFields(this, document.getElementById('genre'), document.getElementById('newGenreFields'));
     });
 
-    // Zobrazení/skrytí polí pro nový typ
-    $('#newTypeCheck').on('change', function () {
-        $('#newTypeFields').toggle(this.checked);
+    document.getElementById('newPublisherCheck').addEventListener('change', function () {
+        toggleFields(this, document.getElementById('publisher'), document.getElementById('newPublisherFields'));
     });
 
-    // Zobrazení/skrytí polí pro nového vydavatele
-    $('#newPublisherCheck').on('change', function () {
-        $('#newPublisherFields').toggle(this.checked);
+    document.getElementById('newTypeCheck').addEventListener('change', function () {
+        toggleFields(this, document.getElementById('type'), document.getElementById('newTypeFields'));
     });
 </script>
 </body>

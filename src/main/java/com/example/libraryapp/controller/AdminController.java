@@ -87,29 +87,50 @@ public class AdminController {
                                 @RequestParam(required = false) String newAuthorSurname,
                                 @RequestParam(required = false) String newGenreName,
                                 @RequestParam(required = false) String newTypeName,
-                                @RequestParam(required = false) String newPublisherName) {
-        if (newAuthorName != null && newAuthorSurname != null) {
+                                @RequestParam(required = false) String newPublisherName,
+                                @RequestParam(required = false) Integer author,
+                                @RequestParam(required = false) Integer type,
+                                @RequestParam(required = false) Integer publisher,
+                                @RequestParam(required = false) Integer genre) {
+
+        if (author != null){
+            book.setAuthor(authorService.getAuthor(author));
+        }
+        if (!newAuthorName.isEmpty() && !newAuthorSurname.isEmpty()) {
             Author newAuthor = new Author(null, newAuthorName, newAuthorSurname);
             authorService.saveAuthor(newAuthor);
             book.setAuthor(newAuthor);
         }
-        if (newGenreName != null) {
+
+        if (genre != null){
+            book.setGenre(genreService.getGenreById(genre));
+        }
+        if (!newGenreName.isEmpty()) {
             Genre newGenre = new Genre(null, newGenreName);
             genreService.saveGenre(newGenre);
             book.setGenre(newGenre);
         }
-        if (newTypeName != null) {
+
+        if (type != null){
+            book.setType(typeService.getTypeById(type));
+        }
+        if (!newTypeName.isEmpty()) {
             Type newType = new Type(null, newTypeName);
             typeService.saveType(newType);
             book.setType(newType);
         }
-        if (newPublisherName != null) {
+
+        if (publisher != null){
+            book.setPublisher(publisherService.getPublisher(publisher));
+        }
+        if (!newPublisherName.isEmpty()) {
             Publisher newPublisher = new Publisher(null, newPublisherName);
             publisherService.savePublisher(newPublisher);
             book.setPublisher(newPublisher);
         }
+        System.out.println("Book created: " + book);
         bookService.saveBook(book);
-        return "redirect:/admin/books";
+        return "redirect:/admin/dashboard/";
     }
 
     @GetMapping("/books/detail/{id}")

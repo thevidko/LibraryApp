@@ -7,4 +7,5 @@ import java.util.List;
 public interface AuthorService {
     List<Author> getAllAuthors();
     void saveAuthor(Author author);
+    Author getAuthor(int id);
 }
