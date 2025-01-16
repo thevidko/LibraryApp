@@ -2,6 +2,7 @@ package com.example.libraryapp.controller;
 
 
 import com.example.libraryapp.model.*;
+import com.example.libraryapp.repository.UserRepository;
 import com.example.libraryapp.service.*;
 import com.example.libraryapp.utils.TextNormalizer;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +28,7 @@ import java.util.Locale;
 @Controller
 @RequestMapping("/admin/")
 public class AdminController {
+    private final UserRepository userRepository;
     private UserService userService;
     private LoanService loanService;
     private BookService bookService;
@@ -37,7 +39,7 @@ public class AdminController {
     private TypeService typeService;
 
     @Autowired
-    public AdminController(UserService userService, LoanService loanService, BookService bookService, PrintoutService printoutService, AuthorService authorService, GenreService genreService, PublisherService publisherService, TypeService typeService) {
+    public AdminController(UserService userService, LoanService loanService, BookService bookService, PrintoutService printoutService, AuthorService authorService, GenreService genreService, PublisherService publisherService, TypeService typeService, UserRepository userRepository) {
         this.userService = userService;
         this.loanService = loanService;
         this.bookService = bookService;
@@ -46,8 +48,10 @@ public class AdminController {
         this.genreService = genreService;
         this.publisherService = publisherService;
         this.typeService = typeService;
+        this.userRepository = userRepository;
     }
 
+    // KNIHY
     @GetMapping("/books/")
     public String books(@RequestParam(required = false) String query,
                         @RequestParam(required = false) String filter,
@@ -133,6 +137,7 @@ public class AdminController {
         return "redirect:/books/";
     }
 
+    //DASHBOARD
     @GetMapping("/dashboard/")
     public String dashboard(Model model) {
         // Získání aktuálního dne
@@ -142,6 +147,8 @@ public class AdminController {
         model.addAttribute("currentDay", today.format(formatter));
         return "admin_dashboard";
     }
+
+    //UŽIVATELÉ
     @GetMapping("/users/")
     public String users(@RequestParam(required = false) String query,
                         @RequestParam(required = false) String filter,
@@ -166,6 +173,21 @@ public class AdminController {
         return "redirect:/";
     }
 
+    //AKTIVACE UŽIVATELŮ
+    @GetMapping("/users/activate")
+    public String activateUser(Model model) {
+        model.addAttribute("users", userService.getUnverifiedUsers());
+        return "admin_user_approve";
+    }
+    @PostMapping("/users/activate/{id}")
+    public String activateUser(@PathVariable Integer id) {
+        User user = userService.getUserById(id);
+        user.setEnabled(true);
+        userService.save(user);
+        return "redirect:/admin/users/detail/" + id;
+    }
+
+    //VÝPŮJČKY
     @GetMapping("/loans/")
     public String searchLoans(
             @RequestParam(required = false) String id,
@@ -303,7 +325,7 @@ public class AdminController {
         return "redirect:/admin/dashboard/";
     }
 
-    //New printout
+    //VÝTISKY ADD
     @PostMapping("/books/{id}/new_printout/")
     public String addPrintout(@PathVariable("id") Integer id) {
         // Zavolání služby pro přidání výtisku
@@ -313,7 +335,7 @@ public class AdminController {
         return "redirect:/admin/books/detail/" + id;
     }
 
-    //DELETE PRINTOUT
+    //VÝTISKY DELETE
     @PostMapping("/books/delete_printout/{id}")
     public String deletePrintout(@PathVariable("id") Integer id) {
         Printout printout = printoutService.getPrintoutById(id);
@@ -331,7 +353,7 @@ public class AdminController {
         return new RedirectView("/admin/dashboard/");
     }
 
-    //PDF
+    //PDF ŠTÍTEK
     @GetMapping("/print-label/{id}")
     public void generateLabel(@PathVariable("id") Integer printoutId, HttpServletResponse response) {
         Printout printout = printoutService.getPrintoutById(printoutId);
@@ -371,7 +393,7 @@ public class AdminController {
         }
     }
 
-    //Print card
+    //PDF KARTIČKA
     @GetMapping("/users/print/{id}")
     public void generateUserCard(@PathVariable("id") Integer userId, HttpServletResponse response) {
 

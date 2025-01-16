@@ -32,6 +32,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Loan> loanList;
 
+    @Column(name = "enabled")
+    private boolean enabled;
+
     public String getFullName(){
         return name + " " + surname;
     }

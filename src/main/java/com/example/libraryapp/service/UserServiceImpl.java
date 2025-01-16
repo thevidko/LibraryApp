@@ -5,6 +5,7 @@ import com.example.libraryapp.repository.UserRepository;
 import com.example.libraryapp.security.UserDetailsImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -57,9 +58,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getUnverifiedUsers() {
+        return userRepository.findByEnabledFalse();
+    }
+
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(username);
         if(user == null) {
+            throw new UsernameNotFoundException(username);
+        }
+        // Učet musí být aktivovaný
+        if (!user.isEnabled()){
             throw new UsernameNotFoundException(username);
         }
         return new UserDetailsImpl(user);

@@ -13,4 +13,6 @@ public interface UserService extends UserDetailsService {
 
     void save(User user);
     List<User> searchUsers(String query, String filter);
+    List<User> getUnverifiedUsers();
+
 }

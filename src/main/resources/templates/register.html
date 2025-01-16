@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knihovna - Registrace</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- Optional JavaScript a jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body class="bg-light">
+<div class="container d-flex flex-column justify-content-center align-items-center vh-100">
+    <div class="card shadow p-4" style="max-width: 400px; width: 100%;">
+        <h1 class="text-center text-primary mb-2">BookKeeper</h1>
+        <h2 class="text-center text-secondary">ZŠ škola</h2>
+        <h3 class="text-center text-muted mb-4">Registrace</h3>
+
+        <!-- Zpráva o úspěchu -->
+        <div class="alert alert-success mt-4" role="alert" th:if="${param.success}">
+            Registrace byla úspěšná! Pro dokončení registrace musíte navštvívit knihovnu.
+        </div>
+
+        <div class="alert alert-danger mt-4" role="alert" th:if="${param.error}">
+            Registrace nebyla úspěšná. Tento e-mail je již zaregistrovaný.
+        </div>
+
+        <!-- Formulář pro registraci -->
+        <form th:action="@{/register}" method="post">
+            <div class="form-group">
+                <label for="name">Jméno</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Vaše jméno" required>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="surname">Příjmení</label>
+                <input type="text" class="form-control" name="surname" id="surname" placeholder="Vaše příjmení" required>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="username">E-mail</label>
+                <input type="email" class="form-control" name="username" id="username" placeholder="Váš e-mail" required>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="password">Heslo</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Zvolte heslo" required>
+            </div>
+
+            <div class="form-group mt-3">
+                <label for="confirmPassword">Potvrzení hesla</label>
+                <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Zadejte heslo znovu" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-block mt-4">Registrovat se</button>
+        </form>
+
+        <!-- Odkaz na přihlášení -->
+        <div class="text-center mt-3">
+            <span>Již máte účet? </span>
+            <a href="/login" class="text-primary">Přihlaste se zde</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
